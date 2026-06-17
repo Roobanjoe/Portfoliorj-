@@ -94,6 +94,19 @@ const works: Work[] = [
 ];
 
 function Thumb({ work }: { work: Work }) {
+  // Featured drive works: show as a muted autoplaying loop video background
+  if (work.featured && work.source === "drive") {
+    return (
+      <video
+        src={`https://drive.google.com/uc?export=download&id=${work.id}`}
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+    );
+  }
   if (work.thumbnail) {
     return (
       <img
@@ -151,6 +164,19 @@ function Player({ work }: { work: Work }) {
     );
   }
   if (work.source === "drive") {
+    // Featured drive works: use native video element with loop support
+    if (work.featured) {
+      return (
+        <video
+          className="h-full w-full"
+          src={`https://drive.google.com/uc?export=download&id=${work.id}`}
+          controls
+          autoPlay
+          loop
+          playsInline
+        />
+      );
+    }
     return (
       <iframe
         className="h-full w-full"
