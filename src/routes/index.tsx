@@ -55,6 +55,7 @@ type Work = {
   id: string;
   tag: string;
   thumbnail?: string;
+  featured?: boolean;
 };
 
 const yt = (u: string) => {
@@ -75,6 +76,7 @@ const ig = (u: string) => {
 };
 
 const works: Work[] = [
+  { title: "Jewellery AD Sample", role: "AD Production & Motion Graphics", source: "drive", url: "https://drive.google.com/file/d/1BZmM_lDh36jmuMPdui2afmCFfmqcK9XY/view", id: drive("https://drive.google.com/file/d/1BZmM_lDh36jmuMPdui2afmCFfmqcK9XY/view"), tag: "Promo", featured: true },
   { title: "23 Pulikeshi", role: "AI Visuals & Music", source: "youtube", url: "https://youtu.be/7_1w3myn7T8", id: yt("https://youtu.be/7_1w3myn7T8"), tag: "AI", thumbnail: twentyThreeThumbnail.url },
   { title: "Stalintha Vantharu", role: "AI Visuals — Troll Song", source: "youtube", url: "https://youtu.be/9L-cAhSrSI4", id: yt("https://youtu.be/9L-cAhSrSI4"), tag: "AI", thumbnail: stalinthaThumbnail.url },
   { title: "EPS Song", role: "Visuals", source: "drive", url: "https://drive.google.com/file/d/1J_EBA_nFvT_8D0XZEUUdqNRpSvQSJasi/view", id: "1J_EBA_nFvT_8D0XZEUUdqNRpSvQSJasi", tag: "AI", thumbnail: epsThumbnail.url },
@@ -362,14 +364,24 @@ function Index() {
             {visible.map((w, idx) => {
               const Icon = sourceIcon(w.source);
               return (
-                <Reveal key={w.url} delay={(idx % 3) * 100}>
+                <Reveal key={w.url} delay={(idx % 3) * 100} className={w.featured ? "sm:col-span-2 lg:col-span-3" : ""}>
                 <TiltCard
                   onClick={() => setOpen(w)}
-                  className="w-full overflow-hidden rounded-2xl border border-border bg-card text-left transition-colors hover:border-primary/60"
+                  className={`w-full overflow-hidden rounded-2xl border bg-card text-left transition-all ${
+                    w.featured
+                      ? "border-primary/70 shadow-[0_0_40px_rgba(0,255,120,0.18)] hover:shadow-[0_0_60px_rgba(0,255,120,0.30)] hover:border-primary"
+                      : "border-border hover:border-primary/60"
+                  }`}
                 >
-                  <div className="relative aspect-video overflow-hidden bg-muted">
+                  <div className={`relative overflow-hidden bg-muted ${w.featured ? "aspect-[21/9] md:aspect-[21/8]" : "aspect-video"}`}>
                     <Thumb work={w} />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-80" />
+                    {w.featured && (
+                      <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground shadow-[0_0_16px_rgba(0,255,120,0.5)] animate-pulse">
+                        <Sparkles className="h-3 w-3" />
+                        Featured
+                      </div>
+                    )}
                     <div className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-background/80 px-3 py-1 text-[10px] uppercase tracking-wider backdrop-blur">
                       <Icon className="h-3 w-3 text-primary" />
                       {w.source}
@@ -379,8 +391,15 @@ function Index() {
                         <Play className="ml-1 h-6 w-6 fill-current" />
                       </div>
                     </div>
+                    {w.featured && (
+                      <div className="absolute bottom-4 left-6 right-6 hidden md:block">
+                        <div className="text-[10px] uppercase tracking-[0.3em] text-primary">{w.tag}</div>
+                        <h3 className="mt-1 text-2xl font-bold text-white drop-shadow-lg">{w.title}</h3>
+                        <p className="mt-1 text-sm text-white/70">{w.role}</p>
+                      </div>
+                    )}
                   </div>
-                  <div className="p-5">
+                  <div className={`p-5 ${w.featured ? "md:hidden" : ""}`}>
                     <div className="text-[10px] uppercase tracking-[0.25em] text-primary">{w.tag}</div>
                     <h3 className="mt-2 text-lg font-semibold">{w.title}</h3>
                     <p className="mt-1 text-sm text-muted-foreground">{w.role}</p>
